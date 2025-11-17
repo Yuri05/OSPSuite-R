@@ -208,7 +208,7 @@ result <- tryCatch(
     riskyOperation()
   },
   error = function(e) {
-    stop(paste("Failed to perform operation:", e$message))
+    stop(paste(messages$failedToPerformOperation(e$message)))
   }
 )
 ```
@@ -217,9 +217,9 @@ result <- tryCatch(
 
 ```r
 # Example of logging with ospsuite.utils
-ospsuite.utils::logError("An error occurred during simulation")
-ospsuite.utils::logDebug("Debug information for troubleshooting")
-ospsuite.utils::logInfo("Informational message about process status")
+ospsuite.utils::logError(messages$someError)
+ospsuite.utils::logDebug(messages$someDebugInformation)
+ospsuite.utils::logInfo(messages$someInformation)
 ```
 
 **Message formatting**: Error, debug, and info messages can be formatted using `cli` for enhanced readability. See [taking advantage of glue and cli formatting](https://www.open-systems-pharmacology.org/OSPSuite.RUtils/dev/articles/logger.html#taking-advantage-of-glue-and-cli-formatting) for details.
