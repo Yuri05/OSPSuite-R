@@ -226,9 +226,23 @@ ospsuite.utils::logInfo(messages$someInformation)
 
 ```r
 # Example of formatting messages with cli
-ospsuite.utils::logError("Failed to load simulation from {.file {filePath}}")
-ospsuite.utils::logInfo("Processing {.val {nRows}} rows of data")
-ospsuite.utils::logDebug("Parameter {.field {paramName}} has value {.val {paramValue}}")
+# Define messages with cli formatting in messages.R
+messages$errorLoadingSimulation <- function(filePath) {
+  "Failed to load simulation from {.file {filePath}}"
+}
+
+messages$infoProcessingData <- function(nRows) {
+  "Processing {.val {nRows}} rows of data"
+}
+
+messages$debugParameterValue <- function(paramName, paramValue) {
+  "Parameter {.field {paramName}} has value {.val {paramValue}}"
+}
+
+# Use in code with logging
+ospsuite.utils::logError(messages$errorLoadingSimulation(filePath))
+ospsuite.utils::logInfo(messages$infoProcessingData(nRows))
+ospsuite.utils::logDebug(messages$debugParameterValue(paramName, paramValue))
 ```
 
 ### Performance
