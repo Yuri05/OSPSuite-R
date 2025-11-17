@@ -180,15 +180,26 @@ stopifnot(length(values) > 0)
 
 ### Error Handling
 
+Error messages should be defined in [`R/messages.R`](https://github.com/Open-Systems-Pharmacology/OSPSuite-R/blob/main/R/messages.R) to ensure consistency and reusability. Some error messages are already defined in the `ospsuite.utils` package - see [`ospsuite.utils messages.R`](https://github.com/Open-Systems-Pharmacology/OSPSuite.RUtils/blob/main/R/messages.R).
+
 ```r
-# Use stop() for errors with informative messages
-if (is.null(simulation)) {
-  stop("Simulation cannot be NULL")
+# Define error messages in messages.R
+messages$errorSimulationIsNull <- function() {
+  "Simulation cannot be NULL"
 }
 
-# Use warning() for non-fatal issues
+messages$errorDeprecatedFunction <- function(oldFunc, newFunc) {
+  paste0("Function '", oldFunc, "' is deprecated. Use '", newFunc, "' instead.")
+}
+
+# Use stop() with messages from messages.R
+if (is.null(simulation)) {
+  stop(messages$errorSimulationIsNull())
+}
+
+# Use warning() for non-fatal issues with messages from messages.R
 if (deprecated) {
-  warning("This function is deprecated. Use newFunction() instead.")
+  warning(messages$errorDeprecatedFunction("oldFunction", "newFunction"))
 }
 
 # Use tryCatch() for operations that may fail
@@ -200,6 +211,24 @@ result <- tryCatch(
     stop(paste("Failed to perform operation:", e$message))
   }
 )
+```
+
+**Logging functionality**: Error, debug, and info messages can be additionally logged using the `ospsuite.utils` logging functionality. See the [logger documentation](https://www.open-systems-pharmacology.org/OSPSuite.RUtils/dev/articles/logger.html) for details.
+
+```r
+# Example of logging with ospsuite.utils
+ospsuite.utils::logError("An error occurred during simulation")
+ospsuite.utils::logDebug("Debug information for troubleshooting")
+ospsuite.utils::logInfo("Informational message about process status")
+```
+
+**Message formatting**: Error, debug, and info messages can be formatted using `cli` for enhanced readability. See [taking advantage of glue and cli formatting](https://www.open-systems-pharmacology.org/OSPSuite.RUtils/dev/articles/logger.html#taking-advantage-of-glue-and-cli-formatting) for details.
+
+```r
+# Example of formatting messages with cli
+ospsuite.utils::logError("Failed to load simulation from {.file {filePath}}")
+ospsuite.utils::logInfo("Processing {.val {nRows}} rows of data")
+ospsuite.utils::logDebug("Parameter {.field {paramName}} has value {.val {paramValue}}")
 ```
 
 ### Performance
